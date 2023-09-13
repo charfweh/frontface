@@ -1,4 +1,4 @@
-<div align = "center"><h1> :satellite: FrontFace :memo: </h1></div>
+<div align = "center"><h1> :satellite: FrontFace </h1></div>
 <div align = "center"><h4> :beginner: Your own initial recon for pentest!<h4></div><br>
 
 
