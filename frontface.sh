@@ -94,7 +94,7 @@ do
 	fi
 	
 done
-echo -e "${Green}------[INF] Nmap output------${Color_Off}"
+echo -e "${Green}------[INF] Nmap service scan output------${Color_Off}"
 cat $1.servicescan
 echo -e "${bgreen}[END] Done with frontface, all the best!${Color_Off}"
 
