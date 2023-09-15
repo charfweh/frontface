@@ -25,6 +25,22 @@ then
 	echo -e "${Red}[x] IP address not identified${Color_Off}"
 	exit 1
 fi
+
+echo -e "${Green}[+] Making writeup file${Color_Off}"
+printf "# Title\n# Recon\n\n# Enum\n\n# Initial Foothold\n\n# Privesc" >> writeup.md
+echo -e "${Green}[INF] File writeup.md created ${Color_Off}"
+
+# CHECK IF HOST IS UP OR ELSE EXIT
+
+echo -e "${Green}[INF] Checking if $1 is alive${Color_Off}"
+ping=`ping -c 1 $1 | grep bytes | wc -l`
+if [[ "$ping" -gt 1 ]];then
+	echo -e "${bgreen}[+] Host is up${Color_Off}"
+else
+	echo -e "${bred}[-] Host is down, exiting now${Color_Off}"
+	exit 1
+fi
+
 echo -e "${Green}[+] Running nmap on ${1}${Color_Off}\n" 
 
 
@@ -36,6 +52,10 @@ portandservice=()
 while read line
 do
 	#$line | cut -d / -f 1	
+	if [[ $line == *closed* ]] 
+	then
+		echo -e "${Red}[-] Port is down${Color_Off}"
+	fi	
 	if [[ $line == *open* ]]
 	then
 		echo -e "${Blue}[+] Found port${Color_Off}: $line" | cut -d / -f 1
@@ -46,7 +66,6 @@ do
 		port=$(echo "$line" | cut -d / -f 1)
 		portandservice+=(["$port"]="$service")
 	fi
-	
 done < "$1".nmap
 echo -e "${yellow}[INF] nmap command: nmap -sC -sV ${1} ${Color_Off}"
 for val in "${portnumbers[@]}"
@@ -75,5 +94,7 @@ do
 	fi
 	
 done
+echo -e "${Green}------[INF] Nmap output------${Color_Off}"
+cat $1.servicescan
 echo -e "${bgreen}[END] Done with frontface, all the best!${Color_Off}"
 
