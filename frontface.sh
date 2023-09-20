@@ -43,9 +43,15 @@ fi
 
 echo -e "${Green}[+] Running nmap on ${1}${Color_Off}\n" 
 
-
-nmap  --min-rate 1000 $1 | tail -n +6 | head -n -2 > "$1".nmap
-echo -e "${bgreen}[+] Nmap top ports scan done > ${1}.nmap"
+# check if nmap dir exists
+dirnmap="./nmap"
+if [ ! -d "$dirnmap" ];then
+	echo -e "${Green}[+] Creating directory nmap on ${dirnmap}${Color_Off}"
+	mkdir ./nmap
+fi
+echo -e "${Green}[+] Directory nmap exists${dirnmap}${Color_Off}"
+nmap -sV --min-rate 1000 $1 | tail -n +6 | head -n -2 > ./nmap/"$1".nmap
+echo -e "${bgreen}[+] Nmap top ports scan done > ./nmap/${1}.nmap"
 
 portnumbers=()
 portandservice=()
@@ -66,15 +72,15 @@ do
 		port=$(echo "$line" | cut -d / -f 1)
 		portandservice+=(["$port"]="$service")
 	fi
-done < "$1".nmap
+done < "$dirnmap"/"$1".nmap
 echo -e "${yellow}[INF] nmap command: nmap -sC -sV ${1} ${Color_Off}"
 for val in "${portnumbers[@]}"
 do
 	echo -e "${Green1}[+] Running services and versions enumueration on ${Color_Off} $val"
-	nmap -sC -sV $1 -p$val >> "$1".servicescan
+	nmap -sC -sV $1 -p$val >> ./nmap/"$1".servicescan
 done
 
-echo -e "${bgreen}[INF] Service enumeration done > ${1}.service${Color_Off}"
+echo -e "${bgreen}[INF] Service enumeration done > ./nmap/${1}.service${Color_Off}"
 
 #echo -e "${Green1}[+] Performing full port scan on (~3m)${1}${Color_Off}"
 #nmap -T4 -p- --min-rate 1000 $1 > "${1}".fullportscan
@@ -83,18 +89,29 @@ echo -e "${bgreen}[INF] Full port scan done > ${1}.fullportscan${Color_Off}"
 
 echo -e "${bblue}[+] Checking for webservers${Color_Off}"
 
+
+dirgobuster="./gobuster"
+if [ ! -d "$dirgobuster" ];then
+	echo -e "${Green}[+] Creating directory gobuster on ${dirgobuster}${Color_Off}"
+	mkdir ./gobuster
+fi
+echo -e "${Green}[+] Directory gobuster exists${dirgobuster}${Color_Off}"
+# nmap  --min-rate 1000 $1 | tail -n +6 | head -n -2 > ./gobuster/"$1".gobuster
+echo -e "Array:${portandservice[@]}"
 for key in "${!portandservice[@]}"
-do 
-	if [[ ${portandservice[$key]} == *http* ]]
-	then
-		echo -e "[+] Running gobuster"
-		echo -e "${yellow} Command ran: gobuster dir -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -u http://${1}/ -t 50${Color_Off}"
-		gobuster dir -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -u http://$1/ -t 50 > "$1".gobuster
-		echo -e "\n${bgreen}[INF] Gobuster enumeration done > ${1}.gobuster ${Color_Off}"
-	fi
-	
-done
+	do 
+		if [[ ${portandservice[$key]} == *http* ]]
+		then
+			echo -e "[+] Running gobuster"
+			echo -e "${yellow} Command ran: gobuster dir -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -u http://${1}:${key}/ -t 50${Color_Off}"
+			echo -e "${yellow} [WARN] Might slow down webserver ${Color_Off}"
+			gobuster dir -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -u http://${1}:${key}/ -t 50 > "$dirgobuster"/"$1".gobuster
+			echo -e "\n${bgreen}[INF] Gobuster enumeration done > ./gobuster/${1}.gobuster ${Color_Off}"
+		fi
+	done
+echo -e "${bgreen}[+] Gobuster scan done > ./gobuster/${1}.gobuster"
+
 echo -e "${Green}------[INF] Nmap service scan output------${Color_Off}"
-cat $1.servicescan
+# cat ./nmap/$1.servicescan
 echo -e "${bgreen}[END] Done with frontface, all the best!${Color_Off}"
 

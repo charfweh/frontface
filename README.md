@@ -3,9 +3,9 @@
 
 
 # :mega: About
-FrontFace is a initial footprinting and recon tool made for pentesting TryHackme and HackTheBox challenges.
+FrontFace is a initial recon tool made for pentesting TryHackme and HackTheBox challenges.
 
-<div align = "center"><img src="https://i.imgur.com/5RFeGra.png" alt="frontface"></div>
+<div align = "center"><img src="https://i.imgur.com/xNPl8lC.png" alt="frontface"></div>
 
 
 # :question: Why and how?
