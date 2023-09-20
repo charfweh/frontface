@@ -18,7 +18,7 @@ FrontFace is a initial recon tool made for pentesting TryHackme and HackTheBox c
 To run FrontFace
 ```bash
 chmod +x frontface.sh
-./frontface.sh 127.0.0.1
+./frontface.sh [IP] 
 ```
 
 # :pushpin: What does it do?
@@ -28,8 +28,8 @@ chmod +x frontface.sh
 - Cats out the results
 - Cheers you up!
 
-## :pushpin: Note:
-It relies on following tools:
+## :pushpin: Note
+It relies on the following tools:
 - Seclists for wordlists
 - Nmap
 - Gobuster<br>
