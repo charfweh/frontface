@@ -8,24 +8,32 @@ FrontFace is a initial recon tool made for pentesting TryHackme and HackTheBox c
 <div align = "center"><img src="https://i.imgur.com/xNPl8lC.png" alt="frontface"></div>
 
 
-# :question: Why and how?
+# :question: Why?
 - It saves time
 - Get rid of repetitive commands by automating it
-- Organized
-- Customizable
+- Organized, so you can eyeball stuff
+- Customizable, throw in full port scan, change the wordlist and more
 
+## :question: How?
 To run FrontFace
 ```bash
 chmod +x frontface.sh
 ./frontface.sh 127.0.0.1
 ```
 
-# :pushpin: Supported commands
-Assuming your target is up, it uses the following:
-- Seclists
+# :pushpin: What does it do?
+- It runs nmap to scan for open ports
+- Runs service and version enumeration against those open ports
+- If there's _http_ service, runs gobuster
+- Cats out the results
+- Cheers you up!
+
+## :pushpin: Note:
+It relies on following tools:
+- Seclists for wordlists
 - Nmap
 - Gobuster<br>
-Note: _Full port scan is disabled by default, uncomment the code to enable it_
+- _Full port scan is disabled by default, uncomment the code to enable it_
 
 # :hammer: Todo
 - Add support for smb enumeration
